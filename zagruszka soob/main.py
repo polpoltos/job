@@ -1,0 +1,42 @@
+import pyautogui as pg
+import time
+
+time.sleep(2)
+print(pg.position())
+for i in range(300):
+    pg.click(70, 422)
+    time.sleep(2)
+    pg.click("params.png") #для остальной техники
+    pg.click("uss.png") #для УСС
+    time.sleep(1)
+    pg.click("plus.png")
+    pg.moveTo(725, 398, 0.2)
+    pg.click()
+    pg.write("01.02.2024 00:00:00", interval=0.01)
+    pg.moveTo(725, 513, 0.2)
+    pg.click()
+    pg.write("04.02.2024 00:00:00", interval=0.01)
+    time.sleep(1)
+    pg.click("yes.png")
+    time.sleep(10) #ставить в зависимости кол-ва дней загрузки
+    pg.click(1895, 136)
+    time.sleep(2)
+    pg.click(1796, 371)
+    time.sleep(1)
+    pg.click(1847, 397)
+    pg.click(1796, 371)
+    time.sleep(2)
+    pg.moveTo(130, 430, 0.2)
+    pg.mouseDown(button="left")
+    pg.moveTo(59, 430, 0.2)
+    pg.mouseUp(button="left")
+    pg.hotkey('ctrl', 'c')
+    pg.moveTo(1105, 336, 0.2)
+    pg.click()
+    pg.moveTo(575, 493, 0.2)
+    pg.doubleClick()
+    time.sleep(1)
+    pg.hotkey('ctrl', 'v')
+    time.sleep(1)
+    pg.click("prim.png")
+    time.sleep(4)
