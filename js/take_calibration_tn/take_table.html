@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image to CSV Converter</title>
+</head>
+<body>
+  <h1>Image to CSV Converter</h1>
+  <p>Загрузите изображение, чтобы преобразовать его в CSV.</p>
+
+  <input type="file" id="imageInput" accept="image/*" />
+  <button id="processButton">Process Image</button>
+  <a id="downloadLink" style="display: none;">Download CSV</a>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js/dist/tesseract.min.js"></script>
+  <script>
+    const imageInput = document.getElementById("imageInput");
+    const processButton = document.getElementById("processButton");
+    const downloadLink = document.getElementById("downloadLink");
+
+    // Предобработка изображения: бинаризация с Canvas API
+    const preprocessImage = (imageFile) => {
+      return new Promise((resolve, reject) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const image = new Image();
+
+        image.src = URL.createObjectURL(imageFile);
+        image.onload = () => {
+          canvas.width = image.width;
+          canvas.height = image.height;
+
+          // Отрисовываем изображение
+          ctx.drawImage(image, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+          // Бинаризация изображения
+          for (let i = 0; i < imageData.data.length; i += 4) {
+            const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+            const binaryValue = avg < 128 ? 0 : 255; // Чёрно-белое изображение
+            imageData.data[i] = binaryValue;
+            imageData.data[i + 1] = binaryValue;
+            imageData.data[i + 2] = binaryValue;
+          }
+          ctx.putImageData(imageData, 0, 0);
+
+          canvas.toBlob((blob) => resolve(blob));
+        };
+
+        image.onerror = () => reject(new Error("Ошибка загрузки изображения."));
+      });
+    };
+
+    // Распознавание текста с Tesseract.js
+    const recognizeText = (imageBlob) => {
+      return Tesseract.recognize(imageBlob, "eng", {
+        logger: (info) => console.log(info), // Логирование процесса
+      });
+    };
+
+    // Преобразование текста в данные CSV
+    const processTextToCSV = (text) => {
+      const lines = text.trim().split("\n");
+      const data = [];
+
+      // Преобразование текста в двухколоночные данные
+      lines.forEach((line) => {
+        const items = line.split(/\s+/); // Разделяем значения по пробелам
+        for (let i = 0; i < items.length; i += 2) {
+          data.push([
+            items[i],          // Значение первой колонки
+            items[i + 1] || "", // Значение второй колонки или пустое место
+          ]);
+        }
+      });
+
+      // Формирование CSV-данных
+      const csvContent = ["Column 1,Column 2"]
+        .concat(data.map((row) => row.join(",")))
+        .join("\n");
+
+      return csvContent;
+    };
+
+    // Обработчик кнопки "Process Image"
+    processButton.addEventListener("click", async () => {
+      if (!imageInput.files[0]) {
+        alert("Выберите изображение для обработки.");
+        return;
+      }
+
+      const imageFile = imageInput.files[0];
+
+      try {
+        // Предобработка изображения
+        const preprocessedBlob = await preprocessImage(imageFile);
+
+        // Распознавание текста
+        const { data: { text } } = await recognizeText(preprocessedBlob);
+
+        // Преобразование текста в CSV
+        const csvContent = processTextToCSV(text);
+
+        // Сохранение CSV
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = "output.csv";
+        downloadLink.style.display = "block";
+        downloadLink.textContent = "Download CSV";
+      } catch (error) {
+        console.error("Произошла ошибка:", error);
+        alert("Произошла ошибка при обработке изображения.");
+      }
+    });
+  </script>
+</body>
+</html>

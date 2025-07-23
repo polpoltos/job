@@ -1,0 +1,192 @@
+import openpyxl
+
+import pyautogui as pg
+from time import sleep
+import cv2
+import numpy as np
+import pyscreenshot as ImageGrab
+import keyboard
+
+
+
+def find_patt(img, thres=0.60):
+    screenshot = ImageGrab.grab()
+    image = np.array(screenshot.getdata(), dtype='uint8').reshape((screenshot.size[1], screenshot.size[0], 3))
+    patt = cv2.imread(img, 0)
+    img_grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    (patt_H, patt_W) = patt.shape[:2]
+    res = cv2.matchTemplate(img_grey, patt, cv2.TM_CCOEFF_NORMED)
+    loc = np.where(res > thres)
+    points = list(zip(*loc[::-1]))
+    return points
+
+def click_img(img, thres=0.60):
+    screenshot = ImageGrab.grab()
+    image = np.array(screenshot.getdata(), dtype='uint8').reshape((screenshot.size[1], screenshot.size[0], 3))
+    patt = cv2.imread(img, 0)
+    img_grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    (patt_H, patt_W) = patt.shape[:2]
+    res = cv2.matchTemplate(img_grey, patt, cv2.TM_CCOEFF_NORMED)
+    loc = np.where(res > thres)
+    points = list(zip(*loc[::-1]))
+    if len(points) != 0:
+        pg.moveTo(points[0][0] + patt_W / 2, points[0][1] + patt_H / 2)
+        pg.click()
+
+def read_excel(file_path):
+    # Открываем файл Excel
+    workbook = openpyxl.load_workbook(file_path)
+    sheet = workbook.active
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        imei = str(row[-1])
+        f_m_id = str(row[0])
+        if len(imei)==15:
+            print(imei)
+            sleep(2)
+            try:
+                pg.click(647, 335)
+                sleep(2)
+                pg.click(531, 493)
+                sleep(1)
+                pg.hotkey('ctrl', 'a')
+                sleep(0.5)
+                keyboard.write(imei)
+                sleep(0.5)
+                pg.click(150, 571)
+                sleep(0.5)
+                pg.click(659, 571)
+                sleep(1.5)
+                if find_patt('flag.png'):
+                    # Заполнение Id Fort
+                    pg.click(45, 438)
+                    sleep(2)
+                    pg.click(820, 650)
+                    sleep(1)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(0.5)
+                    keyboard.write(f_m_id)
+                    sleep(0.2)
+                    pg.click(1200, 845)
+                    sleep(3)
+                    # Основные IoT
+                    pg.click(78, 438)
+                    sleep(2)
+                    pg.click(203, 528)
+                    sleep(0.5)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(0.5)
+                    keyboard.write('14.03.2025 00:00:00')
+                    sleep(0.5)
+                    # Водитель прицеп
+                    pg.click(393, 192)
+                    sleep(0.5)
+                    pg.click(306, 255)
+                    sleep(0.2)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(0.2)
+                    keyboard.write('driverIdent')
+                    pg.click(306, 331)
+                    sleep(0.2)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(0.2)
+                    keyboard.write('trailer')
+                    pg.click(1000, 1000)
+                    pg.click(306, 446)
+                    sleep(0.2)
+                    pg.hotkey('r')
+                    sleep(0.5)
+                    pg.hotkey('enter')
+                    sleep(1)
+                    # Настройки движения
+                    pg.click(691, 184)
+                    sleep(0.5)
+                    pg.click(258, 268)
+                    sleep(0.2)
+                    keyboard.write('g')
+                    sleep(0.2)
+                    pg.hotkey('enter')
+                    sleep(0.2)
+                    pg.click(308, 334)
+                    sleep(0.2)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(0.2)
+                    keyboard.write('voltage')
+                    sleep(0.2)
+                    pg.click(201, 443)
+                    sleep(0.2)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(0.2)
+                    keyboard.write('((x < 18) && (x >11.9)) || (x > 26.8)')
+                    sleep(1)
+                    # Толпиво
+                    pg.click(950, 182)
+                    sleep(0.5)
+                    pg.click(540, 300)
+                    sleep(1)
+                    pg.click(285, 324)
+                    sleep(0.5)
+                    pg.hotkey('ctrl', 'a')
+                    sleep(1)
+                    keyboard.write('14.03.2025 00:00:00')
+                    sleep(1)
+                    pg.click(789, 291)
+                    pg.click(789, 291)
+                    pg.click(789, 291)
+                    sleep(0.2)
+                    keyboard.write('fuel0')
+                    sleep(0.2)
+                    pg.hotkey('tab')
+                    keyboard.write('fuelSensorValue')
+                    sleep(0.2)
+                    pg.hotkey('tab')
+                    keyboard.write('1')
+                    sleep(0.2)
+                    pg.hotkey('tab')
+                    keyboard.write('2000')
+                    sleep(0.2)
+                    pg.click(1207, 207)
+                    sleep(1)
+                    pg.click(152, 762)
+                    sleep(0.5)
+                    pg.click(152, 762)
+                    pg.click(152, 762)
+                    sleep(0.2)
+                    keyboard.write('1')
+                    pg.hotkey('tab')
+                    keyboard.write('1')
+                    pg.hotkey('tab')
+                    keyboard.write('2000')
+                    pg.hotkey('tab')
+                    keyboard.write('2000')
+                    sleep(0.2)
+                    pg.click(588, 535)
+                    sleep(0.2)
+                    pg.click(1854, 976)
+                    sleep(2)
+                    pg.click(pg.locateCenterOnScreen('nastroyki.png'))
+                    sleep(1)
+                    pg.click(911, 214)
+                    sleep(1)
+                    keyboard.write('14.03.2025')
+                    sleep(0.5)
+                    pg.click(1156, 979)
+                    sleep(1)
+                    pg.click(116, 392)#подумать как реализовать через картинку
+                    sleep(1)
+                    pg.click(110, 195)
+                    sleep(1)
+                    pg.click(1819, 991)
+                    sleep(1)
+                else:
+                    continue
+            except:
+                continue
+        else:
+            continue
+
+
+sleep(2)
+read_excel('New.xlsx')
+
+sleep(2)
+print(pg.position())
