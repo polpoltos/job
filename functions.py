@@ -18,6 +18,9 @@ def find_patt(img, thres=0.60):
         pg.click()
     # return patt_H, patt_W, points
 
+pg.click(pg.locateCenterOnScreen('obnov.png'))
+
+
 #Печать текста, даже из полученного списка
 import keyboard
 

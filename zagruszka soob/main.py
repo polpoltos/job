@@ -1,42 +1,65 @@
 import pyautogui as pg
-import time
+from time import sleep
+import openpyxl
+import keyboard
 
-time.sleep(2)
+sleep(2)
 print(pg.position())
-for i in range(300):
-    pg.click(70, 422)
-    time.sleep(2)
-    pg.click("params.png") #для остальной техники
-    pg.click("uss.png") #для УСС
-    time.sleep(1)
-    pg.click("plus.png")
-    pg.moveTo(725, 398, 0.2)
-    pg.click()
-    pg.write("01.02.2024 00:00:00", interval=0.01)
-    pg.moveTo(725, 513, 0.2)
-    pg.click()
-    pg.write("04.02.2024 00:00:00", interval=0.01)
-    time.sleep(1)
-    pg.click("yes.png")
-    time.sleep(10) #ставить в зависимости кол-ва дней загрузки
-    pg.click(1895, 136)
-    time.sleep(2)
-    pg.click(1796, 371)
-    time.sleep(1)
-    pg.click(1847, 397)
-    pg.click(1796, 371)
-    time.sleep(2)
-    pg.moveTo(130, 430, 0.2)
-    pg.mouseDown(button="left")
-    pg.moveTo(59, 430, 0.2)
-    pg.mouseUp(button="left")
-    pg.hotkey('ctrl', 'c')
-    pg.moveTo(1105, 336, 0.2)
-    pg.click()
-    pg.moveTo(575, 493, 0.2)
-    pg.doubleClick()
-    time.sleep(1)
-    pg.hotkey('ctrl', 'v')
-    time.sleep(1)
-    pg.click("prim.png")
-    time.sleep(4)
+
+
+def read_excel(file_path):
+    # Открываем файл Excel
+    workbook = openpyxl.load_workbook(file_path)
+    sheet = workbook.active
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        wia_id = str(row[0])
+        print(wia_id)
+        sleep(1)
+        pg.click(pg.locateCenterOnScreen('img_1.png'))
+        sleep(1)
+        pg.click(853, 741)
+        sleep(0.5)
+        keyboard.send('ctrl+a')
+        sleep(1)
+        keyboard.write(wia_id)
+        sleep(0.5)
+        pg.click(130, 621)
+        sleep(1)
+        pg.click(pg.locateCenterOnScreen('img_2.png'))
+        sleep(1)
+        try:
+            pg.click(130, 621)
+            sleep(7)
+            try:
+                pg.click(pg.locateCenterOnScreen("img_3.png"))  # для остальной техники
+            except:
+                try:
+                    pg.click(pg.locateCenterOnScreen("img_4.png"))  # для УСС
+                except:
+                    pg.click(pg.locateCenterOnScreen("img_8.png"))
+            sleep(1)
+            keyboard.press('down')
+            sleep(0.2)
+            keyboard.press('down')
+            sleep(0.2)
+            keyboard.press('down')
+            sleep(0.2)
+            keyboard.press('down')
+            sleep(0.2)
+            keyboard.press('down')
+            sleep(0.2)
+            pg.click(pg.locateCenterOnScreen("img_5.png"))
+            sleep(1)
+            pg.click(1514, 624)
+            pg.write("11.09.2025 00:00:00", interval=0.01)
+            pg.click(1514, 800)
+            pg.write("13.09.2025 00:00:00", interval=0.01)
+            sleep(1)
+            pg.click(pg.locateCenterOnScreen("img_6.png"))
+            sleep(10)
+            pg.click(pg.locateCenterOnScreen("img_7.png"))
+            sleep(2)
+        except:
+            continue
+
+read_excel('Object_list.xlsx')
