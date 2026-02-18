@@ -434,9 +434,12 @@ if __name__ == "__main__":
                 time.sleep(1)
 
             find_and_click(driver, By.XPATH, f"//a[contains(@href, '{iot_id}')]")  # Open object params
+            wait_for_ready(driver)
             switch_to_iframe_with_element(driver, By.XPATH, "//*[contains(@name, 'START_DATE')]")  # Go to modal window
             # Main Params
-            find_and_click(driver, By.XPATH, "//*[contains(text(), 'Топливо')]")
+            sleep(0.5)
+            js_click(driver, By.XPATH, "//*[contains(text(), 'Топливо')]") #ПОФИКСИТЬ КЛИК НЕ ВСЕГДА ПРОХОДИТ
+            sleep(0.5)
 
             if dut == 'Да':
                 js_click(driver, By.ID, "B427330460014920078")
@@ -459,7 +462,7 @@ if __name__ == "__main__":
                 grid_cal.save()
                 switch_to_iframe_with_element(driver, By.ID, 'B428166919717409101')
                 js_click(driver, By.ID, 'B428166919717409101')
-                time.sleep(1)
+                time.sleep(2)
                 switch_to_iframe_with_element(driver, By.CSS_SELECTOR, 'td.a-IRR-linkCol a')
                 js_click(driver, By.CSS_SELECTOR, 'td.a-IRR-linkCol a')
 
@@ -468,6 +471,7 @@ if __name__ == "__main__":
 
                 switch_to_iframe_with_element(driver, By.ID, 'B427330862245920078')
                 js_click(driver, By.ID, 'B427330862245920078')
+            sleep(2)
             find_and_click(driver, By.XPATH, "//button[span[text()='создать настройки топлива']]")
             wait_for_ready(driver)
             switch_to_iframe_with_element(driver, By.ID, 'P518_TIME')

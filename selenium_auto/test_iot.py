@@ -14,7 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 import pandas
 
-base_url = 'https://aa.smart-solution.by/'
+base_url = 'https://fms.smartagro.ru'
 ############################
 # Базовые функции Selenium
 ############################
@@ -168,8 +168,7 @@ def select_elem(driver, by, search, text, log=True):
 # Пример использования
 ############################
 if __name__ == "__main__":
-    # LOGIN_URL = f"{base_url}/ords/f?p=901:LOGIN::::::"
-    LOGIN_URL = 'https://aa.smart-solution.by/ords/f?p=901:LOGIN::::::'
+    LOGIN_URL = f"{base_url}/ords/f?p=901:LOGIN::::::"
     USERNAME = "salikov_z"
     PASSWORD = "1111"
 
@@ -241,7 +240,7 @@ if __name__ == "__main__":
             if driver_param != 'nan':
                 find_and_input(driver, By.ID, fields_dict['Водитель'], driver_param)
             if driver_tag != 'nan':
-                select_elem(driver, By.ID, fields_dict['Метка Водителя'], driver_tag)
+                select_elem(driver, By.ID, fields_dict['Тип Водителя'], driver_tag)
             if trailer_param != 'nan':
                 find_and_input(driver, By.ID, fields_dict['Прицеп'], trailer_param)
             if trailer_tag != 'nan':
