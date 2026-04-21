@@ -215,6 +215,7 @@ if __name__ == "__main__":
             signal_loss_interval = row["Интервал потери связи"]#input
 
             try:
+                wait_for_element(driver, By.XPATH, "//button[contains(., 'Iot Id')]")
                 find_and_click(driver, By.XPATH, "//button[contains(., 'Iot Id')]")
                 find_and_input(driver, By.CLASS_NAME, 'apex-item-text', f'{iot_id}')  # Input Iot ID
                 find_and_click(driver, By.XPATH, "//button[contains(., 'Применить')]")  # Search button with text Применить
@@ -275,7 +276,7 @@ if __name__ == "__main__":
             except:
                 find_and_click(driver, By.ID, 'B427264897796920023')
             driver.switch_to.default_content()  # Go to main window
-            time.sleep(3)
+            wait_for_ready(driver, 180)
 
     finally:
         pass

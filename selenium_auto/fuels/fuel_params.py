@@ -437,8 +437,8 @@ if __name__ == "__main__":
             wait_for_ready(driver)
             switch_to_iframe_with_element(driver, By.XPATH, "//*[contains(@name, 'START_DATE')]")  # Go to modal window
             # Main Params
-            sleep(0.5)
-            js_click(driver, By.XPATH, "//*[contains(text(), 'Топливо')]") #ПОФИКСИТЬ КЛИК НЕ ВСЕГДА ПРОХОДИТ
+            sleep(1.5)
+            js_click(driver, By.XPATH, "//li[a/span[text()='Топливо']]/a") #ПОФИКСИТЬ КЛИК НЕ ВСЕГДА ПРОХОДИТ
             sleep(0.5)
 
             if dut == 'Да':

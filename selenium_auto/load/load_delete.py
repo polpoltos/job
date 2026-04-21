@@ -162,7 +162,12 @@ def select_elem(driver, by, search, text, log=True):
         if log:
             print(f"[!] Элемент не является <select>: {by}='{search}'")
         return False
-
+def js_click(driver, by, value, timeout=10):
+    el = WebDriverWait(driver, timeout).until(
+        EC.element_to_be_clickable((by, value))
+    )
+    driver.execute_script("arguments[0].click();", el)
+    return el
 
 
 ############################
@@ -219,8 +224,9 @@ if __name__ == "__main__":
             to_frame(driver)  # Go to modal window
             # Main Params
             wait_for_element(driver, By.XPATH, "//*[contains(@name, 'START_DATE')]")
-            # driver/trailer
+            sleep(1)
             find_and_click(driver, By.XPATH, "//*[contains(text(), 'Параметры в ТС')]")
+            js_click(driver, By.XPATH, "//li[a/span[text()='Параметры в ТС']]/a")
             sleep(0.5)
             if ld == 'з':
                 find_and_click(driver, By.ID, "B427299884259920058")
